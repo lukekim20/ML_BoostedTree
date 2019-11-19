@@ -2,7 +2,7 @@
 title: "Boosted Trees"
 author: "Alex Wood, Wyatt Lansford, Luke Kim, Mitchell Neat"
 date: "11/19/2019"
-output: Boosted_Tree_Presentation
+output: beamer_presentation
 ---
 
 ```{r setup, include=FALSE}
