@@ -1,0 +1,174 @@
+---
+title: "Boosted Trees"
+author: "Alex Wood, Wyatt Lansford, Luke Kim, and Mitchell Neat"
+date: "12/3/2019"
+output:
+  slidy_presentation: default
+  beamer_presentation: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Outline
+
+- Boosted Trees
+
+- Gradient Boosted Trees
+    - Parameters
+    - Math/Algorithm Details
+    - Visual Examples
+  
+- Bostom Crime Data
+    - Regression
+    - Trees
+    - Gradient Boosted Trees
+
+- Summary
+
+## What are Decision Trees?
+
+- Take set of features and split data recursively based on features.
+
+- Splits are chosen to minimize entropy.
+
+[[[Tree Picture]]]
+
+## What is Boosting?
+
+- Combining weak learners (trees) into strong classifiers.
+
+- Key Aspects:
+  - weighting data
+  - misclassification
+  - regularization
+
+## Combined: Boosted Decision Trees
+
+- Iteratively adding learners (trees) to minimize the loss function of the decision tree.
+
+[[[ Loss Function ]]]
+
+[[[ Regularization Function ]]]
+
+- Regularizes after each iteration???
+
+## Types of Boosted Trees
+
+- ADA Boost
+
+  - One of the original boosted tree methods
+  
+- Gradient Boosting
+
+  - Uses gradient descent to optimize decision tree
+
+- XGBoost
+
+  - Specific subtype of gradient boosted trees
+  - "eXtreme Gradient Boosting"
+
+## Generic Tree Parameters
+
+- Maximum depth
+
+- Maximum features
+
+- Minimum samples per leaf
+
+[[[labeled graphic]]]
+
+## GBT Parameters
+
+- Loss Function
+
+- Learning Rate
+
+- Subsample Size
+
+- Number of Trees
+
+  - Generic tree parameters apply here
+
+## Gradient Boosted Tree
+
+[[[ GBT Graphic ]]]
+
+## Mathematical Background
+
+- Loss is the difference between the true and predicted
+
+[[[ Loss Function ]]]
+
+- Regularization helps combat complexity and overfitting
+
+[[[ Regularization Function ]]]
+
+- Combining these helps the supervised learning aspect of GBT, providing the best and simplest fit.
+
+## GBT Algorithm
+
+## Step 2 in Detail
+
+## Detailed Algorithm
+
+## Visual Examples
+
+## Why?
+
+## Introducing the Dataset
+
+## Exploratory Plots
+
+## Regression Attempts
+```{r}
+boston_data <- read.csv("boston_data.csv")
+modfit1 <- lm(as.numeric(boston_data$OFFENSE_DESCRIPTION) ~ boston_data$Lat, data = boston_data)
+modfit2 <- lm(as.numeric(boston_data$OFFENSE_DESCRIPTION) ~ boston_data$Long, data = boston_data)
+modfit3 <- lm(as.numeric(boston_data$OFFENSE_DESCRIPTION) ~ boston_data$Lat + boston_data$Long, data = boston_data)
+modfit4 <- lm(order(as.numeric(boston_data$OFFENSE_DESCRIPTION)) ~ boston_data$Lat + boston_data$Long + as.numeric(boston_data$DISTRICT))
+
+modfit5 <- lm(as.numeric(boston_data$OFFENSE_DESCRIPTION) ~ HOUR + DAY_OF_WEEK + MONTH, data = boston_data)
+
+modfit6 <- lm(order(as.numeric(boston_data$OFFENSE_DESCRIPTION)) ~ Lat + Long + HOUR + DAY_OF_WEEK + MONTH + as.numeric(boston_data$DISTRICT), data = boston_data)
+```
+
+Trying to fit regression models to predict which crimes are being commited did not have great results.
+When trying to predict based on location we have an r squared of 
+```{r}
+summary(modfit4)$r.squared
+```
+
+We then thought time may be a significant factor so we tried to predict type of crime based on the the month, day of week, and time of day. This again was unsuccessful and resulted in a r squared value of
+```{r}
+summary(modfit5)$r.squared
+```
+
+Finally we chose to make a model with any many factors from the data that we could. This is the best regression we could come up with and it still performed very poorly with an r squared value of
+```{r}
+summary(modfit6)$r.squared
+```
+
+## Regular Tree Fit
+
+
+
+## GBT Model
+
+## GBT Plots
+
+## Differences
+
+## Optimizing GBT Model
+
+## Differences
+
+## Summary
+
+The Boosted Tree method is a powerful machine learning algorithm used to improve prediction results from a decision tree. 
+
+The general idea is to "compute a sequence of decision trees in which each successive tree is built for the prediction results of the preceeding tree."
+
+## Summary
+
