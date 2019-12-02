@@ -1,0 +1,194 @@
+---
+title: "(WOOD) Boosted Trees"
+author: "Alex Wood, Wyatt Lansford, Luke Kim, and Mitchell Neat"
+date: "12/3/2019"
+output: beamer_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{r}
+crime <- read.csv('~/Documents/2019 Fall Classes/Machine Learning/Project 2/boston_data.csv')
+knitr::kable(head(crime))
+```
+
+## Outline
+
+- Boosted Trees
+
+- Gradient Boosted Trees
+  
+    - Parameters
+    - Math/Algorithm Details
+    - Visual Examples
+  
+- Bostom Crime Data
+  
+    - Regression
+    - Trees
+    - Gradient Boosted Trees
+
+- Summary
+
+## What are Decision Trees?
+
+- Take set of features and split data recursively based on features.
+
+- Splits are chosen to minimize entropy.
+
+[[[Tree Picture]]]
+
+## What is Boosting?
+
+- Combining weak learners (trees) into strong classifiers.
+
+- Key Aspects:
+  - weighting data
+  - misclassification
+  - regularization
+
+## Combined: Boosted Decision Trees
+
+- Iteratively adding learners (trees) to minimize this objective function of the decision tree.
+
+\begin{center}
+$O(x) = \Sigma_i L(y_i,y_i) + \Sigma_t \Omega (f_t)$
+\end{center}
+
+- $L(y_i,y_i)$ is the loss function
+
+- $\Omega (f_t)$ is the regularization function
+
+## Decision Tree vs. Boosted Decision Tree
+
+## Types of Boosted Trees
+
+- ADA Boost
+
+    - One of the original boosted tree methods
+  
+- Gradient Boosting
+
+    - Uses gradient descent to optimize decision tree
+
+- XGBoost
+
+    - Specific subtype of gradient boosted trees
+    - "eXtreme Gradient Boosting"
+
+## Generic Tree Parameters
+
+- Maximum depth
+
+- Maximum features
+
+- Minimum samples per leaf
+
+[[[labeled graphic]]]
+
+## GBT Parameters
+
+- Loss Function
+
+- Learning Rate
+
+- Subsample Size
+
+- Number of Trees
+
+  - Generic tree parameters apply here
+
+## Gradient Boosted Tree
+
+[[[ GBT Graphic ]]]
+
+## GBT Algorithm
+
+- Step 1: Initialize Model Values
+\vspace{2.5mm}
+    - Values should be constants
+    
+\begin{center}
+$F_0(x) = arg min $$\sum_{i = 1}^{n}$$ L(y_i,\gamma)$
+\end{center}
+    
+- Step 2: Fit Weak Learner
+\vspace{2.5mm}
+    - (more details on next slide)
+\vspace{2.5mm}
+- Step 3: Output $F_M(x)$
+\vspace{2.5mm}
+- Step 4: Prune (optional)
+
+## Step 2 in Detail
+
+1. Compute pseudo-residuals
+\vspace{2.5mm}
+\begin{center}
+$r_{im} = - [\frac{\delta L(y_i,F(x_i))}{\delta F(x_i)}]_{F(x) = F_{m-1}(x)}$ for $i = 1,...,n.$
+\end{center}
+\vspace{2.5mm}
+2. Fit base learner (tree) to psuedo-residuals
+\vspace{2.5mm}
+\begin{center}
+Train the tree using training set ${(x_i,r_{im})}$ for $i = 1,...,n$
+\end{center}   
+\vspace{2.5mm}
+3. Compute multiplier $\gamma_m$ by solving 1D optimization problem
+\vspace{2.5mm}
+\begin{center}
+$\gamma_m = arg min $$\sum_{i = 1}^{n}$$ L(y_i,F_{m-1} + \gamma h_m(x_i))$
+\end{center}   
+\vspace{2.5mm}  
+4. Update model
+\vspace{2.5mm}
+\begin{center}
+$F_m(x) = F_{m-1}(x) + \gamma_m h_m(x)$
+\end{center}   
+\vspace{2.5mm}
+
+## Detailed Algorithm
+
+## Visual Examples
+
+## Why?
+
+- Tree Boosting beats the *curse of dimensionality* by not relying on any distance metric.
+\vspace{2.5mm}
+
+    - Information becomes diluted if there are too many dimensions represented.
+\vspace{5mm}
+- Deeper trees allow capturing of interactions of features automatically.
+
+## Introducing the Dataset
+
+## Exploratory Plots
+
+## Regression Attempts
+
+## Regression Attempts (cont...)
+
+- Regression is not the best choice for classification
+
+## Regular Tree Fit
+
+## GBT Model
+
+## GBT Plots
+
+## Differences
+
+## Optimizing GBT Model
+
+## Differences
+
+## Summary
+
+The Boosted Tree method is a powerful machine learning algorithm used to improve prediction results from a decision tree. 
+
+The general idea is to "compute a sequence of decision trees in which each successive tree is built for the prediction results of the preceeding tree."
+
+## Summary
+
