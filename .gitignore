@@ -3,3 +3,7 @@
 *.RData
 *.Ruserdata
 *.csv
+.Rproj.user
+Neat_Boosted_Tree_Presentation.html
+Boosted_Tree_Presentation.log
+Boosted_Tree_Presentation.tex

@@ -1,0 +1,308 @@
+\documentclass[ignorenonframetext,]{beamer}
+\setbeamertemplate{caption}[numbered]
+\setbeamertemplate{caption label separator}{: }
+\setbeamercolor{caption name}{fg=normal text.fg}
+\beamertemplatenavigationsymbolsempty
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\newif\ifbibliography
+\hypersetup{
+            pdftitle={Boosted Trees},
+            pdfauthor={Alex Wood, Wyatt Lansford, Luke Kim, and Mitchell Neat},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+
+% Prevent slide breaks in the middle of a paragraph:
+\widowpenalties 1 10000
+\raggedbottom
+
+\AtBeginPart{
+  \let\insertpartnumber\relax
+  \let\partname\relax
+  \frame{\partpage}
+}
+\AtBeginSection{
+  \ifbibliography
+  \else
+    \let\insertsectionnumber\relax
+    \let\sectionname\relax
+    \frame{\sectionpage}
+  \fi
+}
+\AtBeginSubsection{
+  \let\insertsubsectionnumber\relax
+  \let\subsectionname\relax
+  \frame{\subsectionpage}
+}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+
+\title{Boosted Trees}
+\author{Alex Wood, Wyatt Lansford, Luke Kim, and Mitchell Neat}
+\date{12/3/2019}
+
+\begin{document}
+\frame{\titlepage}
+
+\begin{frame}{Outline}
+
+\begin{itemize}
+\item
+  Boosted Trees
+\item
+  Gradient Boosted Trees
+\item
+  Parameters
+\item
+  Math/Algorithm Details
+\item
+  Visual Examples
+\item
+  Bostom Crime Data
+\item
+  Regression
+\item
+  Trees
+\item
+  Gradient Boosted Trees
+\item
+  Summary
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{What are Decision Trees?}
+
+\begin{itemize}
+\item
+  Take set of features and split data recursively based on features.
+\item
+  Splits are chosen to minimize entropy.
+\end{itemize}
+
+{[}{[}{[}Tree Picture{]}{]}{]}
+
+\end{frame}
+
+\begin{frame}{What is Boosting?}
+
+\begin{itemize}
+\item
+  Combining weak learners (trees) into strong classifiers.
+\item
+  Key Aspects:
+\item
+  weighting data
+\item
+  misclassification
+\item
+  regularization
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Combined: Boosted Decision Trees}
+
+\begin{itemize}
+\tightlist
+\item
+  Iteratively adding learners (trees) to minimize the loss function of
+  the decision tree.
+\end{itemize}
+
+{[}{[}{[} Loss Function {]}{]}{]}
+
+{[}{[}{[} Regularization Function {]}{]}{]}
+
+\begin{itemize}
+\tightlist
+\item
+  Regularizes after each iteration???
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Types of Boosted Trees}
+
+\begin{itemize}
+\item
+  ADA Boost
+\item
+  One of the original boosted tree methods
+\item
+  Gradient Boosting
+\item
+  Uses gradient descent to optimize decision tree
+\item
+  XGBoost
+\item
+  Specific subtype of gradient boosted trees
+\item
+  ``eXtreme Gradient Boosting''
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Generic Tree Parameters}
+
+\begin{itemize}
+\item
+  Maximum depth
+\item
+  Maximum features
+\item
+  Minimum samples per leaf
+\end{itemize}
+
+{[}{[}{[}labeled graphic{]}{]}{]}
+
+\end{frame}
+
+\begin{frame}{GBT Parameters}
+
+\begin{itemize}
+\item
+  Loss Function
+\item
+  Learning Rate
+\item
+  Subsample Size
+\item
+  Number of Trees
+\item
+  Generic tree parameters apply here
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Gradient Boosted Tree}
+
+{[}{[}{[} GBT Graphic {]}{]}{]}
+
+\end{frame}
+
+\begin{frame}{Mathematical Background}
+
+\begin{itemize}
+\tightlist
+\item
+  Loss is the difference between the true and predicted
+\end{itemize}
+
+{[}{[}{[} Loss Function {]}{]}{]}
+
+\begin{itemize}
+\tightlist
+\item
+  Regularization helps combat complexity and overfitting
+\end{itemize}
+
+{[}{[}{[} Regularization Function {]}{]}{]}
+
+\begin{itemize}
+\tightlist
+\item
+  Combining these helps the supervised learning aspect of GBT, providing
+  the best and simplest fit.
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{GBT Algorithm}
+
+\end{frame}
+
+\begin{frame}{Step 2 in Detail}
+
+\end{frame}
+
+\begin{frame}{Detailed Algorithm}
+
+\end{frame}
+
+\begin{frame}{Visual Examples}
+
+\end{frame}
+
+\begin{frame}{Why?}
+
+\end{frame}
+
+\begin{frame}{Introducing the Dataset}
+
+\end{frame}
+
+\begin{frame}{Exploratory Plots}
+
+\end{frame}
+
+\begin{frame}{Regression Attempts}
+
+\end{frame}
+
+\begin{frame}{Regular Tree Fit}
+
+\end{frame}
+
+\begin{frame}{GBT Model}
+
+\end{frame}
+
+\begin{frame}{GBT Plots}
+
+\end{frame}
+
+\begin{frame}{Differences}
+
+\end{frame}
+
+\begin{frame}{Optimizing GBT Model}
+
+\end{frame}
+
+\begin{frame}{Differences}
+
+\end{frame}
+
+\begin{frame}{Summary}
+
+The Boosted Tree method is a powerful machine learning algorithm used to
+improve prediction results from a decision tree.
+
+The general idea is to ``compute a sequence of decision trees in which
+each successive tree is built for the prediction results of the
+preceeding tree.''
+
+\end{frame}
+
+\begin{frame}{Summary}
+
+\end{frame}
+
+\end{document}
