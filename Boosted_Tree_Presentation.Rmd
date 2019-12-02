@@ -53,7 +53,9 @@ knitr::opts_chunk$set(echo = FALSE)
 - Regularizes after each iteration???
 
 ## Types of Boosted Trees
-
+```{r pic}
+knitr::include_graphics('/home/wlans4/Pictures/Screenshot from 2019-11-24 00-45-31.png.jpg')
+```
 - ADA Boost
 
   - One of the original boosted tree methods
