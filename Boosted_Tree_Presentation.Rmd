@@ -2,10 +2,11 @@
 title: "Boosted Trees"
 author: "Luke Kim, Wyatt Lansford, Mitchell Neat, Alex Wood"
 date: "12/3/2019"
-output: beamer_presentation
-always_allow_html: true
-header-includes:
-  - \usepackage{multicol}
+output:
+  slidy_presentation: default
+  beamer_presentation: default
+header-includes: \usepackage{multicol}
+always_allow_html: yes
 ---
 
 ```{r setup, include=FALSE}
@@ -25,6 +26,9 @@ library(xgboost)
 library(tidyverse)
 library(caret)
 library(DiagrammeR)
+#if you need to 
+#install.packages("kableExtra")
+library(kableExtra)
 ```
 
 ## Outline
@@ -238,7 +242,10 @@ knitr::include_graphics("dataBoston.PNG")
 data = read.csv("boston_data.csv")
 myvar = c("OFFENSE_DESCRIPTION", "OCCURRED_ON_DATE", "STREET", "Lat", "Long")
 sample_data = data[myvar]
-knitr::kable(head(sample_data))
+sample_data = sample_data[6:10,]
+knitr::kable(sample_data)
+# knitr::kable(sample_data)%>%
+#   kable_styling(font_size = 15)
 ```
 
 Crime incident reports provided by Boston Police Department (BPD)
@@ -248,7 +255,7 @@ This dataset contains over 440,000 incidents. For our purpose, we will be observ
 
 ## Exploratory Analysis
 
-```{r}
+```{r, warning=FALSE}
 ggplot2::ggplot(data, aes(x = MONTH))+ geom_histogram()+
   ggtitle("Histogram of Crimes Reported by Month")
 ```
