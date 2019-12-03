@@ -3,10 +3,28 @@ title: "Boosted Trees"
 author: "Alex Wood, Wyatt Lansford, Luke Kim, and Mitchell Neat"
 date: "12/3/2019"
 output: beamer_presentation
+always_allow_html: true
+header-includes:
+  - \usepackage{multicol}
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{r}
+setwd('/home/wlans4/R/ML_BoostedTree')
+```
+
+```{r, results='hide', echo=FALSE, include=FALSE}
+library(ggplot2)
+library(dplyr)
+library(tree)
+library(rpart)
+library(xgboost)
+library(tidyverse)
+library(caret)
+library(DiagrammeR)
 ```
 
 ## Outline
@@ -14,14 +32,16 @@ knitr::opts_chunk$set(echo = FALSE)
 - Boosted Trees
 
 - Gradient Boosted Trees
-  - Parameters
-  - Math/Algorithm Details
-  - Visual Examples
+  
+    - Parameters
+    - Math/Algorithm Details
+    - Visual Examples
   
 - Bostom Crime Data
-  - Regression
-  - Trees
-  - Gradient Boosted Trees
+  
+    - Regression
+    - Trees
+    - Gradient Boosted Trees
 
 - Summary
 
@@ -31,115 +51,354 @@ knitr::opts_chunk$set(echo = FALSE)
 
 - Splits are chosen to minimize entropy.
 
-[[[Tree Picture]]]
+\begin{center}
+\includegraphics[width=.8\textwidth]{basictree.png}
+\end{center}
 
 ## What is Boosting?
 
 - Combining weak learners (trees) into strong classifiers.
 
+\vspace{2.5mm}
+
 - Key Aspects:
+
+
+
   - weighting data
+  
+
+    
   - misclassification
+  
+
+  
   - regularization
 
 ## Combined: Boosted Decision Trees
 
-- Iteratively adding learners (trees) to minimize the loss function of the decision tree.
+- Iteratively adding learners (trees) to minimize this objective function of the decision tree.
 
-[[[ Loss Function ]]]
+\begin{center}
+$O(x) = \Sigma_i L(y_i,y_i) + \Sigma_t \Omega (f_t)$
+\end{center}
 
-[[[ Regularization Function ]]]
+- $L(y_i,y_i)$ is the loss function
 
-- Regularizes after each iteration???
+- $\Omega (f_t)$ is the regularization function
 
 ## Types of Boosted Trees
-```{r pic}
-knitr::include_graphics('/home/wlans4/Pictures/Screenshot from 2019-11-24 00-45-31.png.jpg')
-```
-- ADA Boost
 
-  - One of the original boosted tree methods
-  
+- Ada Boost
+
+    - One of the original boosted tree methods
+    - Adapts a set of user-specified weak learners to create a strong learner
+
+\vspace{2.5mm}
 - Gradient Boosting
 
-  - Uses gradient descent to optimize decision tree
+    - Uses gradient descent to optimize decision tree
+    - Builds weak learners to predict loss of the previous step
 
+\vspace{2.5mm}
 - XGBoost
 
-  - Specific subtype of gradient boosted trees
-  - "eXtreme Gradient Boosting"
+    - Specific subtype of gradient boosted trees
+    - "eXtreme Gradient Boosting"
 
 ## Generic Tree Parameters
 
-- Maximum depth
+\begin{multicols}{2}
+  \begin{itemize}
+    \item  Maximum depth
+    \item  Maximum features
+    \item  Number of Trees
+    \item  Minimum samples per leaf
+  \end{itemize}
+  \columnbreak
 
-- Maximum features
-
-- Minimum samples per leaf
-
-[[[labeled graphic]]]
+  \null \vfill
+  \includegraphics[width=.5\textwidth]{tree_diagram.png}
+  \vfill \null
+\end{multicols}
 
 ## GBT Parameters
 
 - Loss Function
-
+\vspace{2.5mm}
 - Learning Rate
-
+\vspace{2.5mm}
 - Subsample Size
-
+\vspace{2.5mm}
 - Number of Trees
-
+\vspace{1.5mm}
   - Generic tree parameters apply here
 
 ## Gradient Boosted Tree
 
-[[[ GBT Graphic ]]]
-
-## Mathematical Background
-
-- Loss is the difference between the true and predicted
-
-[[[ Loss Function ]]]
-
-- Regularization helps combat complexity and overfitting
-
-[[[ Regularization Function ]]]
-
-- Combining these helps the supervised learning aspect of GBT, providing the best and simplest fit.
+\begin{center}
+  \null \vfill
+  \includegraphics[width=.9\textwidth]{gradient_boosted_tree.png}
+  \vfill \null
+\end{center}
 
 ## GBT Algorithm
 
+- Step 1: Initialize Model Values
+\vspace{2.5mm}
+    - Values should be constants
+    
+\begin{center}
+$F_0(x) = arg min $$\sum_{i = 1}^{n}$$ L(y_i,\gamma)$
+\end{center}
+    
+- Step 2: Fit Weak Learners
+\vspace{2.5mm}
+    - (more details on next slide)
+\vspace{2.5mm}
+- Step 3: Output $F_M(x)$
+\vspace{2.5mm}
+- Step 4: Prune (optional)
+
 ## Step 2 in Detail
+
+1. Compute pseudo-residuals
+\vspace{2.5mm}
+\begin{center}
+$r_{im} = - [\frac{\delta L(y_i,F(x_i))}{\delta F(x_i)}]_{F(x) = F_{m-1}(x)}$ for $i = 1,...,n.$
+\end{center}
+\vspace{2.5mm}
+2. Fit base learner (tree) to psuedo-residuals
+\vspace{2.5mm}
+\begin{center}
+Train the tree using training set ${(x_i,r_{im})}$ for $i = 1,...,n$
+\end{center}   
+\vspace{2.5mm}
+3. Compute multiplier $\gamma_m$ by solving 1D optimization problem
+\vspace{2.5mm}
+\begin{center}
+$\gamma_m = arg min $$\sum_{i = 1}^{n}$$ L(y_i,F_{m-1} + \gamma h_m(x_i))$
+\end{center}   
+\vspace{2.5mm}  
+4. Update model
+\vspace{2.5mm}
+\begin{center}
+$F_m(x) = F_{m-1}(x) + \gamma_m h_m(x)$
+\end{center}   
+\vspace{2.5mm}
 
 ## Detailed Algorithm
 
-## Visual Examples
+\begin{center}
+\includegraphics[width=.8\textwidth]{algorithm.png}
+\end{center}
+
+## Visual Example
+
+\begin{multicols}{2}
+
+  \null \vfill
+  \null \vfill
+  \includegraphics[width=.5\textwidth]{tree.png}
+  \vfill \null
+  \vfill \null
+\columnbreak
+  \null \vfill
+  \includegraphics[width=.5\textwidth]{boosted_tree.png}
+  \vfill \null
+\end{multicols}
 
 ## Why?
 
+- Tree Boosting 'beats' the *curse of dimensionality* by not relying on any distance metric, as well as employing a large amount of inherent regularization through boosting parameters, tree parameters, and randomization parameters
+\vspace{2.5mm}
+
+    - Information becomes diluted if there are too many dimensions represented.
+\vspace{5mm}
+- Deeper trees allow capturing of interactions of features automatically.
+
+## Why?
+
+- Boosting fits the data against the errors of the previous trees, allowing for a self-correcting of incorrect predictions
+
+- Using optional methods such as gradient descent allows you to minimize much more complicated loss functions
+    - If using a learning rate, this also introduces the concept of shrinkage
+    - Shrinkage brings slower convergence and therefore generally improved performance
+    
+- Boosting trees generally perform well for both classification and regression
+
 ## Introducing the Dataset
 
+<<<<<<< HEAD
 ## Exploratory Plots
+=======
+```{r, echo=FALSE}
+knitr::include_graphics("/home/wlans4/R/ML_BoostedTree/images/dataBoston.PNG")
+```
+
+
+```{r}
+data = read.csv("boston_data.csv")
+myvar = c("OFFENSE_DESCRIPTION", "OCCURRED_ON_DATE", "STREET", "Lat", "Long")
+sample_data = data[myvar]
+knitr::kable(head(sample_data))
+```
+
+Crime incident reports provided by Boston Police Department (BPD)
+Incident reported from August 2015 to current are reported.
+
+This dataset contains over 440,000 incidents. For our purpose, we will be observing reports in 2018 (98888 incidents).
+
+## Exploratory Analysis
+
+```{r}
+ggplot2::ggplot(data, aes(x = MONTH))+ geom_histogram()+
+  ggtitle("Histogram of Crimes Reported by Month")
+```
+
+## Exploratory Analysis (cont.)
+
+There are 61 different types of offense code group. We have picked 6 interesting crimes reported in our data.
+
+```{r}
+new_data = read.csv("topSixCrimes.csv")
+t = knitr::kable(sort(table(new_data$OFFENSE_CODE_GROUP), decreasing = T))
+t
+```
+
+## Exploratory Analysis (cont...)
+
+```{r}
+new_data = new_data %>% filter(Lat != -1.0)
+ggplot2::ggplot(new_data, aes(x = Lat, y= Long, col = OFFENSE_CODE_GROUP)) + geom_point() + ggtitle("Reported Crime Incident location by Lat/Long")
+```
+
+Question we want to answer...
+\newline
+Could we predict what kind of offense(OFFENSE CODE GROUP)?
+>>>>>>> a207afd6b0f9858f3c606c4e22bc5fd45b5af73a
 
 ## Regression Attempts
 
+```{r}
+boston_data <- read.csv("boston_data.csv")
+modfit1 <- lm(as.numeric(boston_data$OFFENSE_DESCRIPTION) ~ boston_data$Lat, data = boston_data)
+modfit2 <- lm(as.numeric(boston_data$OFFENSE_DESCRIPTION) ~ boston_data$Long, data = boston_data)
+modfit3 <- lm(as.numeric(boston_data$OFFENSE_DESCRIPTION) ~ boston_data$Lat + boston_data$Long, data = boston_data)
+modfit4 <- lm(order(as.numeric(boston_data$OFFENSE_DESCRIPTION)) ~ boston_data$Lat + boston_data$Long + as.numeric(boston_data$DISTRICT))
+modfit5 <- lm(as.numeric(boston_data$OFFENSE_DESCRIPTION) ~ HOUR + DAY_OF_WEEK + MONTH, data = boston_data)
+modfit6 <- lm(order(as.numeric(boston_data$OFFENSE_DESCRIPTION)) ~ Lat + Long + HOUR + DAY_OF_WEEK + MONTH + as.numeric(boston_data$DISTRICT), data = boston_data)
+```
+
+Trying to fit regression models to predict which crimes are being commited did not have great results.
+When trying to predict based on location we have an r squared of 
+```{r}
+summary(modfit4)$r.squared
+```
+
+We then thought time may be a significant factor so we tried to predict type of crime based on the the month, day of week, and time of day. This again was unsuccessful and resulted in a r squared value of
+```{r}
+summary(modfit5)$r.squared
+```
+
+Finally we chose to make a model with any many factors from the data that we could. This is the best regression we could come up with and it still performed very poorly with an r squared value of
+```{r}
+summary(modfit6)$r.squared
+```
+
+## Regression Attempts (cont...)
+
+\begin{multicols}{2}
+
+  \null \vfill
+  \null \vfill
+  \includegraphics[width=.5\textwidth]{modfit5.png}
+  \vfill \null
+  \vfill \null
+\columnbreak
+  \null \vfill
+  \includegraphics[width=.5\textwidth]{modfit6.png}
+  \vfill \null
+\end{multicols}
+
+\begin{center}
+Regression is not the best choice for classification.
+\end{center}
+
 ## Regular Tree Fit
+
+```{r}
+new_data = read.csv("topSixCrimes.csv")
+subsdata <- subset(new_data , select = -c(INCIDENT_NUMBER,OFFENSE_CODE,
+                                          OFFENSE_DESCRIPTION,OCCURRED_ON_DATE,
+                                          UCR_PART,STREET,Lat,Long,Location))
+
+y <- subsdata$OFFENSE_CODE_GROUP
+subsdata$OFFENSE_CODE_GROUP = NULL
+subsdata$DISTRICT = NULL
+
+write.csv(subsdata, "./test.csv")
+test = read.csv("./test.csv")
+newdataa = cbind(y,test)
+write.csv(newdataa, "./test.csv")
+test = read.csv("./test.csv")
+testy = test$y
+datatree <- tree(y ~., data = test)
+tree2 <- rpart(y ~ ., data = test)
+
+plot(tree2)
+text(tree2, cex = 0.6)
+```
 
 ## GBT Model
 
-## GBT Plots
+`matdat <- data.matrix(test)`
+
+`bst <- xgboost(data = matdat, label = (test$X)/length(test$X), nrounds = 2, objective = "binary:logistic")`
+
+- data: training dataset
+- label: vector of response values ([0:1])
+- nrounds: max number of boosting iterations
+- objective: returns gradients with given prediction and dtrain
+
+## GBT Plot
+
+\begin{center}
+\includegraphics[width=6in,height=3.25in,keepaspectratio]{gbtree.png}
+\end{center}
+
+## Changing Depth
+
+\begin{multicols}{2}
+
+  \null \vfill
+  \null \vfill
+  \includegraphics[height=4in,width=2in,keepaspectratio]{onetree.png}
+  \vfill \null
+  \vfill \null
+\columnbreak
+
+  \includegraphics[height=3in,width=2in,keepaspectratio]{threetree.png}
+
+\end{multicols}
+
 
 ## Differences
 
-## Optimizing GBT Model
+\begin{center}
+Expected Loss of Basic Tree: 0.6170084
+\end{center}
 
-## Differences
+\vspace{5mm}
+
+\begin{center}
+Expected Loss of Gradient Boosted Tree: 0.2500000
+\end{center}
+
+
 
 ## Summary
 
-The Boosted Tree method is a powerful machine learning algorithm used to improve prediction results from a decision tree. 
+Boosted Trees are a powerful machine learning method extending from decision trees, that allows for a great improvement in model accuracy and precision.
 
 The general idea is to "compute a sequence of decision trees in which each successive tree is built for the prediction results of the preceeding tree."
-
-## Summary
-
