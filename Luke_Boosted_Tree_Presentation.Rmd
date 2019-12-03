@@ -1,0 +1,194 @@
+---
+title: "Boosted Trees"
+author: "Alex Wood, Wyatt Lansford, Luke Kim, and Mitchell Neat"
+date: "12/3/2019"
+output:
+  slidy_presentation: default
+  beamer_presentation: default
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+```{r}
+library(ggplot2)
+library(dplyr)
+```
+
+
+## Outline
+
+- Boosted Trees
+
+- Gradient Boosted Trees
+  - Parameters
+  - Math/Algorithm Details
+  - Visual Examples
+  
+- Bostom Crime Data
+  - Regression
+  - Trees
+  - Gradient Boosted Trees
+
+- Summary
+
+## What are Decision Trees?
+
+- Take set of features and split data recursively based on features.
+
+- Splits are chosen to minimize entropy.
+
+[[[Tree Picture]]]
+
+## What is Boosting?
+
+- Combining weak learners (trees) into strong classifiers.
+
+- Key Aspects:
+  - weighting data
+  - misclassification
+  - regularization
+
+## Combined: Boosted Decision Trees
+
+- Iteratively adding learners (trees) to minimize the loss function of the decision tree.
+
+[[[ Loss Function ]]]
+
+[[[ Regularization Function ]]]
+
+- Regularizes after each iteration???
+
+## Types of Boosted Trees
+
+- ADA Boost
+
+  - One of the original boosted tree methods
+  
+- Gradient Boosting
+
+  - Uses gradient descent to optimize decision tree
+
+- XGBoost
+
+  - Specific subtype of gradient boosted trees
+  - "eXtreme Gradient Boosting"
+
+## Generic Tree Parameters
+
+- Maximum depth
+
+- Maximum features
+
+- Minimum samples per leaf
+
+[[[labeled graphic]]]
+
+## GBT Parameters
+
+- Loss Function
+
+- Learning Rate
+
+- Subsample Size
+
+- Number of Trees
+
+  - Generic tree parameters apply here
+
+## Gradient Boosted Tree
+
+[[[ GBT Graphic ]]]
+
+## Mathematical Background
+
+- Loss is the difference between the true and predicted
+
+[[[ Loss Function ]]]
+
+- Regularization helps combat complexity and overfitting
+
+[[[ Regularization Function ]]]
+
+- Combining these helps the supervised learning aspect of GBT, providing the best and simplest fit.
+
+## GBT Algorithm
+
+## Step 2 in Detail
+
+## Detailed Algorithm
+
+## Visual Examples
+
+## Why?
+
+## Introducing the Dataset
+```{r, echo=FALSE}
+knitr::include_graphics("./images/dataBoston.PNG")
+```
+
+
+```{r}
+data = read.csv("./boston_data.csv")
+myvar = c("OFFENSE_DESCRIPTION", "OCCURRED_ON_DATE", "STREET", "Lat", "Long")
+sample_data = data[myvar]
+knitr::kable(head(sample_data))
+```
+
+Crime incident reports provided by Boston Police Department (BPD)
+Incident reported from August 2015 to current are reported.
+
+This dataset contains over 440,000 incidents. For our purpose, we will be observing reports in 2018 (98888 incidents).
+
+## Exploratory Analysis
+
+```{r}
+ggplot2::ggplot(data, aes(x = MONTH))+ geom_histogram()+
+  ggtitle("Histogram of Crimes Reported by Month")
+```
+
+## Exploratory Analysis
+
+There are 61 different types of offense code group. We have picked 6 interesting crimes reported in our data.
+
+```{r}
+new_data = read.csv("./topSixCrimes.csv")
+t = knitr::kable(sort(table(new_data$OFFENSE_CODE_GROUP), decreasing = T))
+t
+```
+
+## Exploratory Analysis
+```{r}
+new_data = new_data %>% filter(Lat != -1.0)
+ggplot2::ggplot(new_data, aes(x = Lat, y= Long, col = OFFENSE_CODE_GROUP)) + geom_point() + ggtitle("Reported Crime Incident location by Lat/Long")
+
+```
+
+Question we want to answer...
+\newline
+Could we predict what kind of offense(OFFENSE CODE GROUP)?
+
+## Regression Attempts
+
+## Regular Tree Fit
+
+## GBT Model
+
+## GBT Plots
+
+## Differences
+
+## Optimizing GBT Model
+
+## Differences
+
+## Summary
+
+The Boosted Tree method is a powerful machine learning algorithm used to improve prediction results from a decision tree. 
+
+The general idea is to "compute a sequence of decision trees in which each successive tree is built for the prediction results of the preceeding tree."
+
+## Summary
+
