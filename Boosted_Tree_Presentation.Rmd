@@ -13,7 +13,7 @@ knitr::opts_chunk$set(echo = FALSE)
 ```
 
 ```{r}
-setwd('~/Documents/2019 Fall Classes/Machine Learning/Project 2/')
+setwd('/home/wlans4/R/ML_BoostedTree')
 ```
 
 ```{r, results='hide', echo=FALSE, include=FALSE}
@@ -89,14 +89,16 @@ $O(x) = \Sigma_i L(y_i,y_i) + \Sigma_t \Omega (f_t)$
 
 ## Types of Boosted Trees
 
-- ADA Boost
+- Ada Boost
 
     - One of the original boosted tree methods
+    - Adapts a set of user-specified weak learners to create a strong learner
 
 \vspace{2.5mm}
 - Gradient Boosting
 
     - Uses gradient descent to optimize decision tree
+    - Builds weak learners to predict loss of the previous step
 
 \vspace{2.5mm}
 - XGBoost
@@ -110,7 +112,7 @@ $O(x) = \Sigma_i L(y_i,y_i) + \Sigma_t \Omega (f_t)$
   \begin{itemize}
     \item  Maximum depth
     \item  Maximum features
-    \item  Maximum features
+    \item  Number of Trees
     \item  Minimum samples per leaf
   \end{itemize}
   \columnbreak
@@ -150,7 +152,7 @@ $O(x) = \Sigma_i L(y_i,y_i) + \Sigma_t \Omega (f_t)$
 $F_0(x) = arg min $$\sum_{i = 1}^{n}$$ L(y_i,\gamma)$
 \end{center}
     
-- Step 2: Fit Weak Learner
+- Step 2: Fit Weak Learners
 \vspace{2.5mm}
     - (more details on next slide)
 \vspace{2.5mm}
@@ -208,17 +210,27 @@ $F_m(x) = F_{m-1}(x) + \gamma_m h_m(x)$
 
 ## Why?
 
-- Tree Boosting beats the *curse of dimensionality* by not relying on any distance metric.
+- Tree Boosting 'beats' the *curse of dimensionality* by not relying on any distance metric, as well as employing a large amount of inherent regularization through boosting parameters, tree parameters, and randomization parameters
 \vspace{2.5mm}
 
     - Information becomes diluted if there are too many dimensions represented.
 \vspace{5mm}
 - Deeper trees allow capturing of interactions of features automatically.
 
+## Why?
+
+- Boosting fits the data against the errors of the previous trees, allowing for a self-correcting of incorrect predictions
+
+- Using optional methods such as gradient descent allows you to minimize much more complicated loss functions
+    - If using a learning rate, this also introduces the concept of shrinkage
+    - Shrinkage brings slower convergence and therefore generally improved performance
+    
+- Boosting trees generally perform well for both classification and regression
+
 ## Introducing the Dataset
 
 ```{r, echo=FALSE}
-knitr::include_graphics("dataBoston.PNG")
+knitr::include_graphics("/home/wlans4/R/ML_BoostedTree/images/dataBoston.PNG")
 ```
 
 
@@ -246,7 +258,7 @@ ggplot2::ggplot(data, aes(x = MONTH))+ geom_histogram()+
 There are 61 different types of offense code group. We have picked 6 interesting crimes reported in our data.
 
 ```{r}
-new_data = read.csv("~/Documents/ML_BoostedTree/topSixCrimes.csv")
+new_data = read.csv("topSixCrimes.csv")
 t = knitr::kable(sort(table(new_data$OFFENSE_CODE_GROUP), decreasing = T))
 t
 ```
@@ -312,7 +324,7 @@ Regression is not the best choice for classification.
 ## Regular Tree Fit
 
 ```{r}
-new_data = read.csv("~/Documents/ML_BoostedTree/topSixCrimes.csv")
+new_data = read.csv("topSixCrimes.csv")
 subsdata <- subset(new_data , select = -c(INCIDENT_NUMBER,OFFENSE_CODE,
                                           OFFENSE_DESCRIPTION,OCCURRED_ON_DATE,
                                           UCR_PART,STREET,Lat,Long,Location))
@@ -351,18 +363,6 @@ text(tree2, cex = 0.6)
 \includegraphics[width=6in,height=3.25in,keepaspectratio]{gbtree.png}
 \end{center}
 
-## Differences
-
-\begin{center}
-Expected Loss of Basic Tree: 0.6170084
-\end{center}
-
-\vspace{5mm}
-
-\begin{center}
-Expected Loss of Gradient Boosted Tree: 0.2500000
-\end{center}
-
 ## Changing Depth
 
 \begin{multicols}{2}
@@ -378,10 +378,23 @@ Expected Loss of Gradient Boosted Tree: 0.2500000
 
 \end{multicols}
 
+
 ## Differences
+
+\begin{center}
+Expected Loss of Basic Tree: 0.6170084
+\end{center}
+
+\vspace{5mm}
+
+\begin{center}
+Expected Loss of Gradient Boosted Tree: 0.2500000
+\end{center}
+
+
 
 ## Summary
 
-The Boosted Tree method is a powerful machine learning algorithm used to improve prediction results from a decision tree. 
+Boosted Trees are a powerful machine learning method extending from decision trees, that allows for a great improvement in model accuracy and precision.
 
 The general idea is to "compute a sequence of decision trees in which each successive tree is built for the prediction results of the preceeding tree."
