@@ -13,7 +13,7 @@ knitr::opts_chunk$set(echo = FALSE)
 ```
 
 ```{r}
-setwd('/home/wlans4/R/ML_BoostedTree')
+setwd('/home/wlans4/R/ML_BoostedTree/')
 ```
 
 ```{r, results='hide', echo=FALSE, include=FALSE}
@@ -229,16 +229,13 @@ $F_m(x) = F_{m-1}(x) + \gamma_m h_m(x)$
 
 ## Introducing the Dataset
 
-<<<<<<< HEAD
-## Exploratory Plots
-=======
 ```{r, echo=FALSE}
 knitr::include_graphics("/home/wlans4/R/ML_BoostedTree/images/dataBoston.PNG")
 ```
 
 
 ```{r}
-data = read.csv("boston_data.csv")
+data = read.csv("/home/wlans4/R/ML_BoostedTree/boston_crime.csv")
 myvar = c("OFFENSE_DESCRIPTION", "OCCURRED_ON_DATE", "STREET", "Lat", "Long")
 sample_data = data[myvar]
 knitr::kable(head(sample_data))
@@ -261,7 +258,7 @@ ggplot2::ggplot(data, aes(x = MONTH))+ geom_histogram()+
 There are 61 different types of offense code group. We have picked 6 interesting crimes reported in our data.
 
 ```{r}
-new_data = read.csv("topSixCrimes.csv")
+new_data = read.csv("./topSixCrimes.csv")
 t = knitr::kable(sort(table(new_data$OFFENSE_CODE_GROUP), decreasing = T))
 t
 ```
@@ -276,12 +273,11 @@ ggplot2::ggplot(new_data, aes(x = Lat, y= Long, col = OFFENSE_CODE_GROUP)) + geo
 Question we want to answer...
 \newline
 Could we predict what kind of offense(OFFENSE CODE GROUP)?
->>>>>>> a207afd6b0f9858f3c606c4e22bc5fd45b5af73a
 
 ## Regression Attempts
 
 ```{r}
-boston_data <- read.csv("boston_data.csv")
+boston_data <- read.csv("boston_crime.csv")
 modfit1 <- lm(as.numeric(boston_data$OFFENSE_DESCRIPTION) ~ boston_data$Lat, data = boston_data)
 modfit2 <- lm(as.numeric(boston_data$OFFENSE_DESCRIPTION) ~ boston_data$Long, data = boston_data)
 modfit3 <- lm(as.numeric(boston_data$OFFENSE_DESCRIPTION) ~ boston_data$Lat + boston_data$Long, data = boston_data)
@@ -328,11 +324,10 @@ Regression is not the best choice for classification.
 ## Regular Tree Fit
 
 ```{r}
-new_data = read.csv("topSixCrimes.csv")
+new_data = read.csv("./topSixCrimes.csv")
 subsdata <- subset(new_data , select = -c(INCIDENT_NUMBER,OFFENSE_CODE,
-                                          OFFENSE_DESCRIPTION,OCCURRED_ON_DATE,
-                                          UCR_PART,STREET,Lat,Long,Location))
-
+                                          OFFENSE_DESCRIPTION,UCR_PART,OCCURRED_ON_DATE, STREET,Lat,Long,Location))
+head(new_data)
 y <- subsdata$OFFENSE_CODE_GROUP
 subsdata$OFFENSE_CODE_GROUP = NULL
 subsdata$DISTRICT = NULL
