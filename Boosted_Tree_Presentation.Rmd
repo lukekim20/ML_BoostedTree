@@ -338,9 +338,14 @@ text(tree2, cex = 0.6)
 
 `matdat <- data.matrix(test)`
 
-`bst <- xgboost(data = matdat, label = (test$X)/length(test$X), max_depth = 3, eta = 1, nthread = 2, nrounds = 2, objective = "binary:logistic")`
+`bst <- xgboost(data = matdat, label = (test$X)/length(test$X), nrounds = 2, objective = "binary:logistic")`
 
-## GBT Plots
+- data: training dataset
+- label: vector of response values ([0:1])
+- nrounds: max number of boosting iterations
+- objective: returns gradients with given prediction and dtrain
+
+## GBT Plot
 
 \begin{center}
 \includegraphics[width=6in,height=3.25in,keepaspectratio]{gbtree.png}
@@ -358,8 +363,20 @@ Expected Loss of Basic Tree: 0.6170084
 Expected Loss of Gradient Boosted Tree: 0.2500000
 \end{center}
 
+## Changing Depth
 
-## Optimizing GBT Model
+\begin{multicols}{2}
+
+  \null \vfill
+  \null \vfill
+  \includegraphics[height=4in,width=2in,keepaspectratio]{onetree.png}
+  \vfill \null
+  \vfill \null
+\columnbreak
+
+  \includegraphics[height=3in,width=2in,keepaspectratio]{threetree.png}
+
+\end{multicols}
 
 ## Differences
 
